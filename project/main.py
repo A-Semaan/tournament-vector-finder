@@ -79,41 +79,59 @@ def showMatrixWithArcs(matrix):
                         receivesFrom[incrementedJ] = [len(senders)-1]
                     else:
                         receivesFrom[incrementedJ].append(len(senders)-1)
-    tournament = getBestMedians(size)
-    print("This tournament's medians are:\n")
-    for string in tournament:
+        if(len(givesTo)!=i+1):
+            givesTo[i+1]=[]
+        if(len(receivesFrom)):
+            receivesFrom[i+1]=[]
+    tournament = getDirectedPathsAndMedianOrder(size)
+    print("This tournament's directed paths are:\n")
+    for string in tournament[0]:
+        print("\t"+string)
+    medianOrder=tournament[1]
+    print("This tournament's median orders are having value of "+str(medianOrder["maxForwardArc"])+":\n")
+    for string in medianOrder["medianOrder"]:
         print("\t"+string)
 
 
-def getBestMedians(size):
+def getDirectedPathsAndMedianOrder(size):
+    maxMedianOrder=0
+    medianOrder=[]
     maxForwardArcs = 0
-    bestMedians = []
-    medians = []
+    directedPaths = []
+    currentDirectedPaths = []
     for i in range(1, size+1):
-        joinLists(medians,getMediansStartingAt("", medians, i, size))
-        for i in range(len(medians)):
-            currentArcCount = calculateMaxForwardArcs(medians[i])
+        joinLists(currentDirectedPaths, getDirectedPathsStartingAt(
+            "", currentDirectedPaths, i, size))
+        for i in range(len(currentDirectedPaths)):
+            currentArcCount = calculateMaxForwardArcs(currentDirectedPaths[i])
             if(currentArcCount > maxForwardArcs):
-                bestMedians.clear()
-                bestMedians.append(medians[i])
+                directedPaths.clear()
+                directedPaths.append(currentDirectedPaths[i])
                 maxForwardArcs = currentArcCount
             elif(currentArcCount == maxForwardArcs):
-                bestMedians.append(medians[i])
-    return bestMedians
-    # for i in range(size):
-    #     median = getMedianStartingAt(i, size)
-    #     calculatedMaxArcs = calculateMaxForwardArcs(median)
-    #     if(calculatedMaxArcs>maxForwardArcs):
-    #         maxForwardArcs=calculatedMaxArcs
-    #         bestMedian=median
-    # return bestMedian
+                directedPaths.append(currentDirectedPaths[i])
+
+            currentMedianOrder = calculateMedianOrder(currentDirectedPaths[i])
+            if(currentMedianOrder>maxMedianOrder):
+                medianOrder.clear()
+                medianOrder.append(currentDirectedPaths[i])
+                maxMedianOrder = currentMedianOrder
+            elif(currentMedianOrder==maxMedianOrder):
+                medianOrder.append(currentDirectedPaths[i])
+
+    return [directedPaths,{
+        "medianOrder":medianOrder,
+        "maxForwardArc":maxMedianOrder
+    }]
+
 
 def joinLists(list1, list2):
     for string in list2:
         if string not in list1:
             list1.append(string)
 
-def getMediansStartingAt(string, list, startAt, size):
+
+def getDirectedPathsStartingAt(string, list, startAt, size):
     if string.count("v") == size-1:
         if(startAt > 0):
             string += " -> v"+str(abs(startAt))
@@ -131,39 +149,9 @@ def getMediansStartingAt(string, list, startAt, size):
         possibleSteps = getNextPossibleSteps(abs(startAt))
         for i in possibleSteps:
             if str(abs(i)) not in string:
-                joinLists(list,getMediansStartingAt(string[:], list, i, size))
+                joinLists(list, getDirectedPathsStartingAt(
+                    string[:], list, i, size))
         return list
-#     maxForwardArcs=0
-
-#     actualStartAt = (startAt%size)+1
-#     nextVertex = actualStartAt
-#     bestMedian=""
-#     median=[]
-#     for i in range(size):
-#         median.append(nextVertex)
-#         nextVertex = getNextNodeFor(abs(nextVertex))
-#     median.append(nextVertex)
-
-#     strMedian = convertToArcedTournament(median)
-#     calculatedForwardArcs = calculateMaxForwardArcs(strMedian)
-#     if(calculatedForwardArcs>maxForwardArcs):
-#         maxForwardArcs=calculatedForwardArcs
-#         bestMedian = strMedian
-
-#     return bestMedian
-
-# def getNextNodeFor(i):
-#     if(givesTo.get(i,-1)!=-1):
-#         val = givesTo[i]
-#         givesTo.pop(i)
-#         receivesFrom.pop(i)
-#         return receipients[val[0]]
-#     elif(receivesFrom.get(i,-1)!=1):
-#         val = receivesFrom[i]
-#         givesTo.pop(i)
-#         receivesFrom.pop(i)
-#         return -senders[val[0]]
-#     return -1
 
 
 def getNextPossibleSteps(num):
@@ -178,8 +166,42 @@ def getNextPossibleSteps(num):
     return possibleSteps
 
 
+def getNextForwardPossibleStepsExcluding(num, exclude):
+    possibleSteps = []
+
+    temp = givesTo[num]
+    for i in temp:
+        if(receipients[i] != exclude):
+            possibleSteps.append(receipients[i])
+    return possibleSteps
+
+
 def calculateMaxForwardArcs(median):
     return median.count("->")
+
+
+def calculateMedianOrder(median):
+    visibleForwardArcs = calculateMaxForwardArcs(median)
+    remainingForwardArcs = calculateRemainingForwardArcs(median)
+    return visibleForwardArcs+remainingForwardArcs
+
+
+def calculateRemainingForwardArcs(median):
+    temps = median.split("v")
+    vertices = []
+    for temp in temps:
+        if(len(temp)>=1):
+            vertices.append(int(temp[0]))
+    counter=0;
+    verticesClone = vertices.copy()
+    for i in range(len(vertices)-1):
+        forwardPossibleSteps = getNextForwardPossibleStepsExcluding(vertices[i],vertices[i+1])
+        verticesClone.pop(0)
+        for step in forwardPossibleSteps:
+            if(verticesClone.count(step)>0):
+                counter+=1
+
+    return counter
 
 
 def convertToArcedTournament(median):

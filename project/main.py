@@ -258,16 +258,21 @@ if(__name__ == "__main__"):
         size = input("\nThe vector is of order n\nPlease enter n:\n> ")
         size = int(size)
         tournament = [0 for row in range(size)]
-        while True:
-            values = input(
-                "\nPlease enter the decimal values of the tournament separated by comma (example: 6,1,1):\n> ")
-            values = values.split(",")
-            if len(values) != size-1:
-                print("Invalid input")
-            else:
-                for i in range(size-1):
-                    tournament[i] = int(values[i])
-                break
+        
+        values = input(
+            "\nPlease enter the decimal values of the tournament separated by comma (example: 6,1,1):\n> ")
+        values = values.split(",")
+        if len(values) > size:
+            print("Invalid input")
+            exit()
+        elif len(values)==size:
+            if values[size-1]!=0:
+                print ("Input does not represent a valid tournament")
+                exit()
+        
+        for i in range(size-1):
+            tournament[i] = int(values[i])
+            
 
         matrix = convertToMatrix(tournament)
         if(matrix == False):

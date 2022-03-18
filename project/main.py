@@ -3,9 +3,9 @@ receipients = []
 givesTo = {}
 receivesFrom = {}
 
-# functions
+#   functions
 
-
+#   conversions
 def binaryToDecimal(n):
     return int(n, 2)
 
@@ -14,11 +14,11 @@ def decimalToBinary(n):
     return bin(n).replace("0b", "")
 
 
-def convertToTournament(vector):
-    size = len(vector)
+def convertToTournament(matrix):
+    size = len(matrix)
     toReturn = [0 for i in range(size)]
     for i in range(size-1):
-        toReturn[i] = binaryToDecimal("".join(list(map(str, vector[i]))))
+        toReturn[i] = binaryToDecimal("".join(list(map(str, matrix[i]))))
     return toReturn
 
 
@@ -230,11 +230,14 @@ if(__name__ == "__main__"):
         for i in range(1, size):
             vertices = input("\nPlease enter the indexes of the outneighbours of v" +
                              str(i)+" that are greater than "+str(i)+" separated by comma (example: 2,4,5):\n> ")
-            if vertices == "":
-                vertices = "-1"
-            vertices = vertices.split(",")
-            for vertexIndex in vertices:
-                vector[i-1][int(vertexIndex)-1] = 1
+            if (isinstance(vertices,str) and vertices !="" and vertices !="0"):
+                vertices = vertices.split(",")
+                for vertexIndex in vertices:
+                    vertexIndex = int(vertexIndex)
+                    if(vertexIndex>size or vertexIndex<=i):
+                        print("Invalid input")
+                        exit()
+                    vector[i-1][int(vertexIndex)-1] = 1
 
         tournament = convertToTournament(vector)
         matrix = invertMatrix(vector)

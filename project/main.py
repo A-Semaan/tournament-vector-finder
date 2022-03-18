@@ -252,7 +252,7 @@ if(__name__ == "__main__"):
             for j in range(size):
                 print(matrix[i][j], end="")
             print("]")
-
+        showMatrixWithArcs(matrix)
     else:
         # we enter the tournament
         size = input("\nThe vector is of order n\nPlease enter n:\n> ")

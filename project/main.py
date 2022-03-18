@@ -106,18 +106,22 @@ def getDirectedPathsAndMedianOrder(size):
             currentArcCount = calculateMaxForwardArcs(currentDirectedPaths[i])
             if(currentArcCount > maxForwardArcs):
                 directedPaths.clear()
-                directedPaths.append(currentDirectedPaths[i])
+                if(currentDirectedPaths[i] not in directedPaths):
+                    directedPaths.append(currentDirectedPaths[i])
                 maxForwardArcs = currentArcCount
             elif(currentArcCount == maxForwardArcs):
-                directedPaths.append(currentDirectedPaths[i])
+                if(currentDirectedPaths[i] not in directedPaths):
+                    directedPaths.append(currentDirectedPaths[i])
 
             currentMedianOrder = calculateMedianOrder(currentDirectedPaths[i])
             if(currentMedianOrder>maxMedianOrder):
                 medianOrder.clear()
-                medianOrder.append(currentDirectedPaths[i])
+                if(currentDirectedPaths[i] not in medianOrder):
+                    medianOrder.append(currentDirectedPaths[i])
                 maxMedianOrder = currentMedianOrder
             elif(currentMedianOrder==maxMedianOrder):
-                medianOrder.append(currentDirectedPaths[i])
+                if(currentDirectedPaths[i] not in medianOrder):
+                    medianOrder.append(currentDirectedPaths[i])
 
     return [directedPaths,{
         "medianOrder":medianOrder,

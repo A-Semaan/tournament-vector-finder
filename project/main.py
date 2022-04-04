@@ -222,7 +222,7 @@ def convertToArcedTournament(median):
 if(__name__ == "__main__"):
     while True:
         operation = input(
-            "\nPlease choose the operation:\nEnter 1 for Vector\nEnter 2 for Tournament\n> ")
+            "\nPlease choose the operation:\nEnter 1 to search for representative Vector of T with respect to E=v1...vn\nEnter 2 to search for a Tournament relative to a vetor if it exists\n> ")
         if operation == "1" or operation == "2":
             break
 
@@ -283,16 +283,18 @@ if(__name__ == "__main__"):
             print("This is an invalid tournament")
             exit(0)
         else:
-
             vectorOutput = ""
             matrix = invertMatrix(matrix)
             for i in range(size):
-                vertexOutput = "v"+str(i+1)
-                vertex = "\tv"+str(i+1)+" -> "
+                vertex = "(v"+str(i+1)+", "
                 for j in range(size):
                     if(matrix[i][j] == 1):
-                        vertexOutput += vertex+"v"+str(j+1)+"\n"
-                vectorOutput += vertexOutput
+                        if(vectorOutput==""):
+                            vectorOutput+="E(T)= { "
+                        else:
+                            vectorOutput+=", "
+                        vectorOutput += vertex+"v"+str(j+1)+")"
+            vectorOutput+=" }"
             print("Matrix:")
             for i in range(size):
                 print("[", end="")

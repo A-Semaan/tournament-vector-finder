@@ -84,11 +84,12 @@ def showMatrixWithArcs(matrix):
         if(len(receivesFrom)):
             receivesFrom[i+1]=[]
     tournament = getDirectedPathsAndMedianOrder(size)
-    print("This tournament's directed paths are:\n")
+    print("This tournament has "+str(len(tournament[0]))+" directed paths and they are:\n")
     for string in tournament[0]:
         print("\t"+string)
     medianOrder=tournament[1]
-    print("This tournament's median orders are having value of "+str(medianOrder["maxForwardArc"])+":\n")
+    print("This tournament's median orders have "+str(medianOrder["maxForwardArc"])+" forward arcs.")
+    print("This tournament has "+str(len(medianOrder["medianOrder"]))+" median orders, and they are:\n")
     for string in medianOrder["medianOrder"]:
         print("\t"+string)
 
@@ -245,7 +246,7 @@ if(__name__ == "__main__"):
 
         tournament = convertToTournament(vector)
         matrix = invertMatrix(vector)
-        print("Tournament:")
+        print("Vector:")
         for i in range(size):
             print("[", end="")
             print(tournament[i], end="")
@@ -275,7 +276,10 @@ if(__name__ == "__main__"):
                 exit()
         
         for i in range(size-1):
-            tournament[i] = int(values[i])
+            if(len(values)-1<i):
+                tournament[i] = 0    
+            else:
+                tournament[i] = int(values[i])
             
 
         matrix = convertToMatrix(tournament)
@@ -284,8 +288,10 @@ if(__name__ == "__main__"):
             exit(0)
         else:
             vectorOutput = ""
+            fullTournament = "V(T)= { "
             matrix = invertMatrix(matrix)
             for i in range(size):
+                fullTournament+="v"+str(i+1)+("" if i==size-1 else ", ")
                 vertex = "(v"+str(i+1)+", "
                 for j in range(size):
                     if(matrix[i][j] == 1):
@@ -295,12 +301,14 @@ if(__name__ == "__main__"):
                             vectorOutput+=", "
                         vectorOutput += vertex+"v"+str(j+1)+")"
             vectorOutput+=" }"
+            fullTournament+=" }"
             print("Matrix:")
             for i in range(size):
                 print("[", end="")
                 for j in range(size):
                     print(matrix[i][j], end="")
                 print("]")
-            print("Vector:")
+            print("Tournament:")
+            print(fullTournament)
             print(vectorOutput)
             showMatrixWithArcs(matrix)

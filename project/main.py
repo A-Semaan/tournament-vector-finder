@@ -84,12 +84,12 @@ def showMatrixWithArcs(matrix):
         if(len(receivesFrom)):
             receivesFrom[i+1]=[]
     tournament = getDirectedPathsAndMedianOrder(size)
-    print("This tournament has "+str(len(tournament[0]))+" directed paths and they are:\n")
+    print("This tournament has "+str(len(tournament[0]))+" directed path(s) and they are/it is:\n")
     for string in tournament[0]:
         print("\t"+string)
     medianOrder=tournament[1]
     print("This tournament's median orders have "+str(medianOrder["maxForwardArc"])+" forward arcs.")
-    print("This tournament has "+str(len(medianOrder["medianOrder"]))+" median orders, and they are:\n")
+    print("This tournament has "+str(len(medianOrder["medianOrder"]))+" median order(s), and they are/it is:\n")
     for string in medianOrder["medianOrder"]:
         print("\t"+string)
 
@@ -223,7 +223,7 @@ def convertToArcedTournament(median):
 if(__name__ == "__main__"):
     while True:
         operation = input(
-            "\nPlease choose the operation:\nEnter 1 to search for representative Vector of T with respect to E=v1...vn\nEnter 2 to search for a Tournament relative to a vetor if it exists\n> ")
+            "\nPlease choose the operation:\nEnter 1 to search for representative Vector of T with respect to E=v1...vn\nEnter 2 to search for a Tournament relative to a vector if it exists\n> ")
         if operation == "1" or operation == "2":
             break
 
